@@ -1,0 +1,12 @@
+{% extends 'default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+{% for new in news %}
+<h2>{{ new.title|display_some_bad_text }}</h2>
+<h6><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}; Rating: {{ new.rating }} </i></h6>
+<h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:20 }} </a></h5>
+<br>
+{% endfor %}
+{% endblock %}
