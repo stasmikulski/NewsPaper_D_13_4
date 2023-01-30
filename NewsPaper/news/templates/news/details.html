@@ -2,7 +2,8 @@
 {% load custom_filters %}
 {% load custom_tags %}
 
-{% block title %}
+{% block content %}
+<br>
 <h2>{{ new.title|display_some_bad_text }}</h2>
 <p><i>Author: {{ new.author.authorUser.username }} </i></p>
 <h5>{{ new.text|display_some_bad_text }}</h5>
@@ -12,4 +13,4 @@
 {% for comment in post_comments %}
 <p><b>{{ comment.text }}.</b><i> Author: {{ comment.commentUser.username }}; {{ comment.dateCreation|date:'d-m-Y' }}; Rating: {{ comment.rating }}</i></p>
 {% endfor %}
-{% endblock %}
+{% endblock content%}

@@ -135,13 +135,88 @@ for i in champ_post_comments_values:
     print(i['dateCreation'].strftime("%Y-%m-%d"), Author.objects.get(id=i['commentUser']).authorUser.username,' Rating:', i['rating'], i['text'])
 
 # *** new, after 23.01.2023
-author = Author.objects.get(id=3)
+author = Author.objects.get(id=2)
 Post.objects.create(author=author, categoryType='AR', title='Reading Famous Lorem Ipsum with Hackers', text='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer et porta orci. Integer ullamcorper viverra interdum. Aenean lectus erat, faucibus nec semper vel, venenatis ut diam. Nulla tincidunt eleifend sem venenatis ultricies. Sed et feugiat neque. Etiam elementum non mauris eu rutrum. Fusce faucibus nisl a ex luctus dictum. Etiam feugiat in arcu non ultricies.')
 Post.objects.get(id=7).like()
 Comment.objects.create(commentPost=Post.objects.get(id=7),commentUser=Author.objects.get(id=2).authorUser, text='Blah-blah-blah - Fishing and Hackers are censored words')
 Comment.objects.create(commentPost=Post.objects.get(id=7),commentUser=Author.objects.get(id=2).authorUser, text='Fishing and Hackers are The Greatest words. Amen')
 Comment.objects.get(id=10).like()
 Comment.objects.get(id=11).like()
+
+# *** new, after 29.01.2023
+# from news.models import *
+author = Author.objects.get(id=2)
+Post.objects.create(author=author, categoryType='AR', title='Amazing Creating Big Text With Short \
+Words', text='In Jan 2023 we said - Amazing Creating Big Text With Short Words. Integer et porta orci. \
+Integer ullamcorper viverra interdum. Aenean lectus erat, faucibus nec semper vel, venenatis ut diam. Lorem ipsum dolor sit amet, \
+consectetur adipiscing elit. Nulla tincidunt eleifend sem venenatis ultricies. Sed et feugiat neque. Etiam elementum non mauris eu rutrum. \
+Fusce faucibus nisl a ex luctus dictum. Etiam feugiat in arcu non ultricies.')
+Post.objects.all().count()
+Post.objects.get(id=8).postCategory.add(Category.objects.get(id=2))
+Post.objects.get(id=8).postCategory
+Post.objects.get(id=8).like()
+Comment.objects.create(commentPost=Post.objects.get(id=8),commentUser=Author.objects.get(id=1).authorUser, text='We are very proud. Long live Rock.n.Roll')
+Comment.objects.create(commentPost=Post.objects.get(id=8),commentUser=Author.objects.get(id=3).authorUser, text='God, save the Queen! Show must go on!')
+Comment.objects.all().count()
+Comment.objects.get(id=12).like()
+Comment.objects.get(id=13).like()
+Author.objects.get(id=1).update_rating()
+Author.objects.get(id=1).ratingAuthor
+Author.objects.get(id=2).update_rating()
+Author.objects.get(id=2).ratingAuthor
+Author.objects.get(id=3).update_rating()
+Author.objects.get(id=3).ratingAuthor
+
+Author.objects.create(authorUser=User.objects.get(id=4))
+Author.objects.all().values('authorUser')
+Author.objects.get(id=4).authorUser.username
+author = Author.objects.get(id=4)
+Post.objects.create(author=author, categoryType='AR', title='French cars in Big Race-2023 \
+Words', text='All french cars, except Citroen C-Crosser runs in Big Race - 2023 in Mercelle, \
+In Jan,29,2023. Sed et feugiat neque. Etiam feugiat in arcu non ultricies. Integer ullamcorper \
+viverra interdum. Aenean lectus erat, faucibus nec semper vel, venenatis ut diam. Lorem ipsum \
+dolor sit amet, consectetur adipiscing elit. Nulla tincidunt eleifend sem venenatis ultricies. \
+Etiam elementum non mauris eu rutrum. Fusce faucibus nisl a ex luctus dictum. ')
+Post.objects.get(id=9).like()
+Comment.objects.create(commentPost=Post.objects.get(id=9),commentUser=Author.objects.get(id=3).authorUser, text='Mitsubishi, Mercedes, Mitsuoka, Mini are not in list?')
+Comment.objects.get(id=14).like()
+
+Category.objects.all()
+<QuerySet [<Category: name: IT>, <Category: name: Politics>, <Category: name: Sport>, <Category: name: Education>, <Category: name: Culture>]>
+Category.objects.create(name='Finance')
+1- IT
+2- Politics
+3- Sport
+4- Education
+5- Culture
+6- Finance
+
+Post.objects.get(id=1).postCategory.all()
+1- <QuerySet [<Category: name: Politics>]>
+2- <QuerySet [<Category: name: Sport>, <Category: name: Education>]>
+3- <QuerySet [<Category: name: Politics>, <Category: name: Sport>]>
+4- <QuerySet [<Category: name: Education>, <Category: name: Culture>]>
+5- <QuerySet [<Category: name: IT>, <Category: name: Education>]>
+6- <QuerySet [<Category: name: Politics>, <Category: name: Finance>]>
+7- <QuerySet [<Category: name: Finance>]>
+8- <QuerySet [<Category: name: Politics>]>
+9- <QuerySet [<Category: name: Sport>]>
+
+Post.objects.get(id=9).postCategory.all()
+
+Post.objects.get(id=6).postCategory.add(Category.objects.get(id=7))
+# ^- Случайно добавил не ту категорию
+
+Post.objects.get(id=9).postCategory.filter(name='Finance').delete()
+# ^- Удалил ее, НО ОНА УДАЛИЛАСЬ ИЗ КАТЕГОРИЙ ТОЖЕ
+
+Category.objects.create(name='Finance')
+7- Finance
+
+
+Post.objects.get(id=9).postCategory.add(Category.objects.get(id=3))
+
+
 
 
 

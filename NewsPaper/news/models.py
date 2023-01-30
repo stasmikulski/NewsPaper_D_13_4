@@ -19,12 +19,14 @@ class Author(models.Model):
         self.ratingAuthor = pRat * 3 + cRat
         self.save()
 
+    def __str__(self):
+        return f'{self.authorUser}'
 
 class Category(models.Model):
     name = models.CharField(max_length=64,unique=True)
 
     def __str__(self):
-        return f'name: {self.name}'
+        return f'{self.name}'
 
 
 class Post(models.Model):
@@ -48,6 +50,19 @@ class Post(models.Model):
 
     def datedmy(self):
         return self.dateCreation.strftime("%d-%m-%Y")
+
+    def catz(self):
+        #print(self.postCategory.all())
+        cats_que = self.postCategory.all()
+        catz = []
+        for c in cats_que:
+            #print(c.name)
+            catdies = '#' + c.name
+            catz.append(catdies)
+        #print(catz)
+        #catsiinline = ' '.join(catz)
+        #print(catsiinline)
+        return catz
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'id':self.id})

@@ -1,0 +1,17 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<br>
+<h1>Delete News</h1>
+<hr>
+<h2>{{ new.title }}</h2>
+<p><i>Author: {{ new.author.authorUser.username }} </i></p>
+<h5>{{ new.text }}</h5>
+<p>{{ new.dateCreation|date:'d-m-Y' }}</p>
+<p>Rating: {{ new.rating }} </p>
+<form action="" method="post">
+    {% csrf_token %}
+    {{form.as_p }}
+    <input type="submit" value="Delete" />
+</form>
+{% endblock content %}
