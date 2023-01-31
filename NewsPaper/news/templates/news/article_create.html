@@ -2,9 +2,8 @@
 
 {% block content %}
 <br>
-<h1>Edit News</h1>
+<h1>Create Article</h1>
 <hr>
-<p>{{ new.categoryType }} : {{ new.datethis }}</p>
 <form action="" method="post">
     {% csrf_token %}
     {{form.as_p }}

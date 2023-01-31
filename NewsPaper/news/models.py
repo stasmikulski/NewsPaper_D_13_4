@@ -57,8 +57,7 @@ class Post(models.Model):
         catz = []
         for c in cats_que:
             #print(c.name)
-            catdies = '#' + c.name
-            catz.append(catdies)
+            catz.append('#' + c.name)
         #print(catz)
         #catsiinline = ' '.join(catz)
         #print(catsiinline)

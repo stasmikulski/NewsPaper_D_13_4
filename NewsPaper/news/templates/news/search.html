@@ -3,6 +3,13 @@
 {% load custom_tags %}
 
 {% block content %}
+<br>
+<h1>Search News using this form:</h1>
+   <form action="" method="get">
+       {{ filterset.form.as_p }}
+       <input type="submit" class="mt-3 btn-primary" value="Найти" />
+   </form>
+<hr>
 {% for new in news %}
 <br>
 <h2>{{ new.title|display_some_bad_text }}</h2>
@@ -11,10 +18,9 @@
     {% for c in new.catz %}
     <i>{{ c }}</i>
     {% endfor %}
-    </h6>
-    <h6>{{ new.id_ }} {{ new.like_ }}</h6>
+    <h6>{{ new.id_ }}</h6>
 
-
+</h6>
 <h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:20 }} </a></h5>
 <br>
 {% endfor %}

@@ -26,9 +26,17 @@ class PostList(ListView):
    ordering = '-dateCreation'
    template_name = 'index.html'
    context_object_name = 'news'
+   paginate_by = 3
+
+
+class PostSearch(ListView):
+   model = Post
+   ordering = '-dateCreation'
+   template_name = 'search.html'
+   context_object_name = 'news'
    paginate_by = 2
 
-   # Переопределяем функцию получения списка товаров
+   # Переопределяем функцию получения списка новостей
    def get_queryset(self):
        # Получаем обычный запрос
        queryset = super().get_queryset()
@@ -38,7 +46,7 @@ class PostList(ListView):
        # Сохраняем нашу фильтрацию в объекте класса,
        # чтобы потом добавить в контекст и использовать в шаблоне.
        self.filterset = PostFilter(self.request.GET, queryset)
-       # Возвращаем из функции отфильтрованный список товаров
+       # Возвращаем из функции отфильтрованный список новостей
        return self.filterset.qs
 
    def get_context_data(self, **kwargs):
@@ -55,6 +63,7 @@ class PostDetail(DetailView):
 class PostDetailEdit(UpdateView):
     form_class = PostForm
     model = Post
+    context_object_name = 'new'
     template_name = 'post_edit.html'
 
     def form_valid(self, form):
@@ -64,10 +73,32 @@ class PostDetailEdit(UpdateView):
     def get_success_url(self, *args, **kwargs):
         return reverse('detail', kwargs={'id': self.object.pk})
 
+class ArticleDetailEdit(UpdateView):
+    form_class = PostForm
+    model = Post
+    context_object_name = 'new'
+    template_name = 'article_edit.html'
+
+    def form_valid(self, form):
+        #post = form.save(commit=False)
+        #post.categoryType = 'AR'
+        #Это если будет нужно сменить 'NW' на 'AR'
+        form.save()
+        return super(ArticleDetailEdit, self).form_valid(form)
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse('detail', kwargs={'id': self.object.pk})
+
 class PostDelete(DeleteView):
     model = Post
     context_object_name = 'new'
     template_name = 'post_delete.html'
+    success_url = '/news_list/'
+
+class ArticleDelete(DeleteView):
+    model = Post
+    context_object_name = 'new'
+    template_name = 'article_delete.html'
     success_url = '/news_list/'
 
 def create_post(request):
@@ -83,21 +114,25 @@ def create_post(request):
 class PostCreate(CreateView):
     form_class = PostForm
     model = Post
-    template_name = 'post_edit.html'
-    success_url = '/news_list/'
+    template_name = 'post_create.html'
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.categoryType = 'NW'
         return super().form_valid(form)
 
+    def get_success_url(self, *args, **kwargs):
+        return reverse('detail', kwargs={'id': self.object.pk})
+
 class ArticleCreate(CreateView):
     form_class = PostForm
     model = Post
-    template_name = 'article_edit.html'
-    success_url = '/news_list/'
+    template_name = 'article_create.html'
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.categoryType = 'AR'
         return super().form_valid(form)
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse('detail', kwargs={'id': self.object.pk})
