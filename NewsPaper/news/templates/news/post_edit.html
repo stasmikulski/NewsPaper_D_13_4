@@ -4,7 +4,8 @@
 <br>
 <h1>Edit News</h1>
 <hr>
-<p>{{ new.categoryType }} : {{ new.datethis }}</p>
+
+<p>Date of Creation : {{ new.datethis }}</p>
 <form action="" method="post">
     {% csrf_token %}
     {{form.as_p }}

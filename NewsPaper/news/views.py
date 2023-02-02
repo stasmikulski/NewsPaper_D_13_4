@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -60,7 +62,8 @@ class PostDetail(DetailView):
    template_name = 'detail.html'
    context_object_name = 'new'
 
-class PostDetailEdit(UpdateView):
+class PostDetailEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.post_edit',)
     form_class = PostForm
     model = Post
     context_object_name = 'new'
@@ -73,7 +76,8 @@ class PostDetailEdit(UpdateView):
     def get_success_url(self, *args, **kwargs):
         return reverse('detail', kwargs={'id': self.object.pk})
 
-class ArticleDetailEdit(UpdateView):
+class ArticleDetailEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.article_edit',)
     form_class = PostForm
     model = Post
     context_object_name = 'new'
@@ -89,13 +93,15 @@ class ArticleDetailEdit(UpdateView):
     def get_success_url(self, *args, **kwargs):
         return reverse('detail', kwargs={'id': self.object.pk})
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.post_delete',)
     model = Post
     context_object_name = 'new'
     template_name = 'post_delete.html'
     success_url = '/news_list/'
 
-class ArticleDelete(DeleteView):
+class ArticleDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.article_delete',)
     model = Post
     context_object_name = 'new'
     template_name = 'article_delete.html'
@@ -111,7 +117,9 @@ def create_post(request):
     return render(request, 'post_edit.html', {'form': form})
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.post_create',)
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
@@ -124,7 +132,8 @@ class PostCreate(CreateView):
     def get_success_url(self, *args, **kwargs):
         return reverse('detail', kwargs={'id': self.object.pk})
 
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.article_create',)
     form_class = PostForm
     model = Post
     template_name = 'article_create.html'

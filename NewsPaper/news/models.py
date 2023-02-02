@@ -64,7 +64,10 @@ class Post(models.Model):
         return catz
 
     def get_absolute_url(self):
-        return reverse('detail', kwargs={'id':self.id})
+        if self.categoryType == 'NW':
+            return reverse('detail', kwargs={'id':self.id})
+        if self.categoryType == 'AR':
+            return reverse('detail_ar', kwargs={'id':self.id})
 
     def like(self):
         self.rating += 1

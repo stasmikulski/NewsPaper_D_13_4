@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'news',
     'accounts',
     'django_filters',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',
 ]
 
 SITE_ID = 1
@@ -78,6 +82,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -132,3 +140,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = "/news_list/"
+LOGOUT_REDIRECT_URL = "home"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}

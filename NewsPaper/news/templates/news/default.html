@@ -31,22 +31,33 @@
                            <a class="nav-link" href="/news/search/">News/Search</a>
                        </li>
                        <li class="nav-item">
-                           <a class="nav-link" href="/news/create/">News/Create</a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="/articles/create/">Articles/Create</a>
-                       </li>
-                       <li class="nav-item">
                            <a class="nav-link" href="/about/">About</a>
                        </li>
                        <li class="nav-item">
                            <a class="nav-link" href="/contacts/">Contact</a>
                        </li>
                        <li class="nav-item">
-                           <a class="nav-link" href="/lorem/">Lorem</a>
+                           <a class="nav-link" href="/lorem/">Lorem Ipsum</a>
                        </li>
                    </ul>
                </div>
+               <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+                   <li class="nav-item nav-link active disabled">
+                       {{ request.user.username }}
+                   </li>
+                   {% if user.is_authenticated %}
+                   <li class="nav-item">
+                       <a class="nav-link" href="/accounts/logout/">LogOut</a>
+                   </li>
+                   {% else %}
+                   <li class="nav-item">
+                       <a class="nav-link" href="/accounts/login/">Login</a>
+                   </li>
+                   {% endif %}
+                   <li class="nav-item">
+                       <a class="nav-link" href="/accounts/signup/">SignUp</a>
+                   </li>
+               </ul>
            </div>
         </nav>
         <!-- Page content-->

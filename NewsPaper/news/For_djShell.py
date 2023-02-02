@@ -182,7 +182,7 @@ Comment.objects.create(commentPost=Post.objects.get(id=9),commentUser=Author.obj
 Comment.objects.get(id=14).like()
 
 Category.objects.all()
-<QuerySet [<Category: name: IT>, <Category: name: Politics>, <Category: name: Sport>, <Category: name: Education>, <Category: name: Culture>]>
+#<QuerySet [<Category: name: IT>, <Category: name: Politics>, <Category: name: Sport>, <Category: name: Education>, <Category: name: Culture>]>
 Category.objects.create(name='Finance')
 1- IT
 2- Politics
