@@ -34,6 +34,9 @@
 {% endif %}
 
 <h2>{{ new.title|display_some_bad_text }}</h2>
+<p><i>Category: {% for c in new.catz %}
+    <i>{{ c }}</i>
+    {% endfor %}</i></p>
 <p><i>Author: {{ new.author.authorUser.username }} </i></p>
 <p class="lead">{{ new.text|display_some_bad_text }}</p>
 <p>{{ new.dateCreation|date:'d-m-Y' }}</p>

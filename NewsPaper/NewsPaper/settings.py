@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.yandex',
+    'django_apscheduler',
 ]
 
 SITE_ID = 1
@@ -122,13 +123,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
+# Если TIME_ZONE = 'UTC' и USE_TZ вкл, и создаем пост, то dateCreation у него -3 часа от МСК
+# Если TIME_ZONE = 'UTC' и USE_TZ выкл, и создаем пост, то dateCreation у него -3 часа от МСК
+# Если USE_TZ вкл, и если postnewsweekly = Post.objects.filter(dateCreation__gte=one_week_ago)
+# то warnings.warn сообщает:
+# RunTimeWarning : DateTimeField received a naive datetime while time zone support is active
 
 
 # Static files (CSS, JavaScript, Images)
@@ -148,5 +154,30 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "mikulski@yandex.ru"
+EMAIL_HOST_PASSWORD = "Trail-Blazer"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = "mikulski@yandex.ru"
+
+SERVER_EMAIL = "mikulski@yandex.ru"
+
+MANAGERS = (
+    ('Ivan', 'mikulski@mail.ru'),
+    ('Petr', 'mikulski@mail.ru'),
+)
+
+ADMINS = (
+    ('Stas', 'mikulski@mail.ru'),
+)
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds

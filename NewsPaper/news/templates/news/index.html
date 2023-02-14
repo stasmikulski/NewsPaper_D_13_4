@@ -23,7 +23,7 @@
 <br>
 <h2>{{ new.title|display_some_bad_text }}</h2>
 <h6><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}; Rating: {{ new.rating }}</i></h6>
-<h6>{{ new.categoryType }} : Category:
+<h6>{{ new.categoryType }}: Category:
     {% for c in new.catz %}
     <i>{{ c }}</i>
     {% endfor %}
@@ -34,11 +34,11 @@
 <h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:30 }} </a></h5>
 <br>
 {% endfor %}
+
    {# Добавляем пагинацию на страницу #}
 
-<div style="display: inline-block; text-align: center; margin: 0 auto;">
 <nav aria-label="Page navigation example">
-  <ul class="pagination">
+  <ul class="pagination justify-content-center">
    {# Информация о предыдущих страницах #}
    {% if page_obj.has_previous %}
 <li class="page-item"><a class="page-link" href="?{% url_replace page=1 %}">1</a></li>
@@ -62,5 +62,5 @@
 
   </ul>
 </nav>
-</div>
+
 {% endblock content %}

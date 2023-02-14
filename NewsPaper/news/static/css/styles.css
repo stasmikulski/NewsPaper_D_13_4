@@ -4059,13 +4059,14 @@ textarea.form-control-lg {
 .navbar-nav {
   display: flex;
   flex-direction: column;
-  padding-left: 0;
+  padding-right: 0.25rem;
+  padding-left: 0.25rem;
   margin-bottom: 0;
   list-style: none;
 }
 .navbar-nav .nav-link {
-  padding-right: 0;
-  padding-left: 0;
+  padding-right: 0.25rem;
+  padding-left: 0.25rem;
 }
 .navbar-nav .dropdown-menu {
   position: static;
