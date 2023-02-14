@@ -16,7 +16,7 @@ one_week_ago = datetime.today() - timedelta(days=1)
 # for cat_here in categs, там и отправляем письма. Таким образом, если у новости
 # две (или больше) категории, и один пользователь подписался на "Спорт", а другой
 # на "Финансы", то они оба получат по одному письму. Правда, если один пользователь
-# подписался и на "Спорт" и на "Финансы", то он получит два письма с одной статьей.
+# подписался и на "Спорт" и на "Финансы", то он получит два письма с одной статьей :(
 #     Итак, здесь (внутри функции post_created) поле "Категория" (postCategory) всегда пустое,
 # даже при использовании instance.postCategory.through.
 # Использовать m2m_changed.connect(post_created, sender=Post.postCategory.through) тоже
@@ -53,31 +53,6 @@ def changing_categs(sender, instance, action, **kwargs):
         print(instance.title)
         print(instance.dateCreation)
 
-        #for runapscheduler
-        postnewsweekly = Post.objects.filter(dateCreation__gte=one_week_ago)
-        print(postnewsweekly)
-        postnewsweeklycount = Post.objects.filter(dateCreation__gte=one_week_ago).count()
-        print(postnewsweeklycount)
-        categoriesall = Category.objects.all()
-        print(categoriesall)
-        for cat in categoriesall:
-            print(cat)
-            postnewsweeklycats = Post.objects.filter(dateCreation__gte=one_week_ago, postCategory=cat)
-            print(postnewsweeklycats)
-            postnewsweeklycatscount = Post.objects.filter(dateCreation__gte=one_week_ago, postCategory=cat).count()
-            print(postnewsweeklycatscount)
-            text4email=''
-            html4email=''
-            for p in postnewsweeklycats:
-                text4email += (f'Заголовок: {p.title}\n' \
-                    f'Ссылка на статью: http://127.0.0.1:8000{p.get_absolute_url()}\n')
-                html4email += (f'Заголовок: {p.title}<br>' 
-                    f'<a href="http://127.0.0.1:8000{p.get_absolute_url()}">'
-                    f'Ссылка на статью</a><br>')
-            print(text4email)
-            print(html4email)
-        #for runapscheduler
-
         categs = instance.postCategory.all()
         print('Categs:', categs)
         for cat_here in categs:
@@ -87,7 +62,7 @@ def changing_categs(sender, instance, action, **kwargs):
                 subscriptions__category=cat_here
             ).values_list('email', flat=True)
 
-            subject = f'New article in category  {cat_here}'
+            subject = f'New article in category {cat_here}'
             # subject = f'Новая статья в категории {cat_here}'
     
             text_content = (
