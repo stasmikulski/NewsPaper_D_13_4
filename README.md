@@ -1,2 +1,2 @@
-# NewsPaper_D_6_7
-for SkillFactory Модуль D6.7
+# NewsPaper_D7.5
+for SkillFactory Модуль D7.5
