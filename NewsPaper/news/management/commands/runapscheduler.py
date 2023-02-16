@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def my_job():
-    one_week_ago = datetime.today() - timedelta(days=1)
+    one_week_ago = datetime.today() - timedelta(days=7)
     postnewsweekly = Post.objects.filter(dateCreation__gte=one_week_ago)
     #print(postnewsweekly)
     categoriesall = Category.objects.all()

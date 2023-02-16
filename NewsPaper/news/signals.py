@@ -17,8 +17,8 @@ one_week_ago = datetime.today() - timedelta(days=1)
 # две (или больше) категории, и один пользователь подписался на "Спорт", а другой
 # на "Финансы", то они оба получат по одному письму. Правда, если один пользователь
 # подписался и на "Спорт" и на "Финансы", то он получит два письма с одной статьей :(
-#     Итак, здесь (внутри функции post_created) поле "Категория" (postCategory) всегда пустое,
-# даже при использовании instance.postCategory.through.
+#     Итак, здесь (внутри функции post_created) поле "Категория" (postCategory) всегда
+# пустое, даже при использовании instance.postCategory.through.
 # Использовать m2m_changed.connect(post_created, sender=Post.postCategory.through) тоже
 # не получается - поле "Категория" (postCategory) опять пустое.
 #    Но!

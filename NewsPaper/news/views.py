@@ -12,6 +12,14 @@ from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 
+from django.http import HttpResponse
+from django.views import View
+from .tasks import hello, my_job
+class IndexView(View):
+    def get(self, request):
+        my_job.delay()
+        hello.delay()
+        return HttpResponse('Hello!')
 
 # Create your views here.
 def index(request):
