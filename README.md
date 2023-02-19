@@ -13,4 +13,4 @@
 Далее, в первом окне запускаем **python3 manage.py runserver** \
 во втором окне запускаем **celery -A NewsPaper worker -l INFO** \
 в третьем окне должен быть запущен сервер **redis-server** \
-Сайт смотрим по адресу ht<span>tp://</span>127.0.0.1:8000/news_list/ \
+Сайт смотрим по адресу ht<span>tp://</span>127.0.0.1:8000/news_list/ 
