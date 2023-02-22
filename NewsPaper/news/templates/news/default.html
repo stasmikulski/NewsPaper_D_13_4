@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -9,8 +10,12 @@
         <title>NewsPaper - My Django Project</title>
         <!-- Favicon-->
         <!-- Core theme CSS (includes Bootstrap)-->
+{% load cache %}
+    {% cache 60 styles %}
         <link href="{% static '/css/styles.css' %}" rel="stylesheet" >
+    {% endcache %}
     </head>
+
     <body>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">

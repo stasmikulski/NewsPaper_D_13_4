@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -11,10 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.views import View
 from .tasks import hello, my_job
+
 class IndexView(View):
     def get(self, request):
         my_job.delay()
@@ -69,13 +71,27 @@ class PostSearch(ListView):
        context['filterset'] = self.filterset
        return context
 
+
 class PostDetail(DetailView):
    model = Post
    template_name = 'detail.html'
    context_object_name = 'new'
 
+   queryset = Post.objects.all()
+'''
+   def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+       obj = cache.get(f'post-{self.kwargs["pk"]}',
+                       None)  # кэш очень похож на словарь, и метод get действует так же. Он забирает значение по ключу, если его нет, то забирает None.
+
+       # если объекта нет в кэше, то получаем его и записываем в кэш
+       if not obj:
+           obj = super().get_object(queryset=self.queryset)
+           cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+       return obj'''
+
 class PostDetailEdit(PermissionRequiredMixin, UpdateView):
-    permission_required = ('news.post_edit',)
+    permission_required = ('news.change_post',)
     form_class = PostForm
     model = Post
     context_object_name = 'new'
@@ -86,10 +102,11 @@ class PostDetailEdit(PermissionRequiredMixin, UpdateView):
         return super(PostDetailEdit, self).form_valid(form)
 
     def get_success_url(self, *args, **kwargs):
-        return reverse('detail', kwargs={'id': self.object.pk})
+        return reverse('post_detail_show', kwargs={'id': self.object.pk})
+
 
 class ArticleDetailEdit(PermissionRequiredMixin, UpdateView):
-    permission_required = ('news.article_edit',)
+    permission_required = ('news.change_post',)
     form_class = PostForm
     model = Post
     context_object_name = 'new'
@@ -103,21 +120,25 @@ class ArticleDetailEdit(PermissionRequiredMixin, UpdateView):
         return super(ArticleDetailEdit, self).form_valid(form)
 
     def get_success_url(self, *args, **kwargs):
-        return reverse('detail', kwargs={'id': self.object.pk})
+        return reverse('post_detail_show', kwargs={'id': self.object.pk})
 
 class PostDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = ('news.post_delete',)
+    permission_required = ('news.delete_post',)
     model = Post
+    print('- -  - - - >', model.pk)
+    print('- -  - - - >', model.id)
     context_object_name = 'new'
     template_name = 'post_delete.html'
     success_url = '/news_list/'
 
+
 class ArticleDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = ('news.article_delete',)
+    permission_required = ('news.post_delete',)
     model = Post
     context_object_name = 'new'
     template_name = 'article_delete.html'
     success_url = '/news_list/'
+
 
 def create_post(request):
     form = PostForm()
@@ -130,7 +151,7 @@ def create_post(request):
 
 
 class PostCreate(PermissionRequiredMixin, CreateView):
-    permission_required = ('news.post_create',)
+    permission_required = ('news.add_post',)
     raise_exception = True
     form_class = PostForm
     model = Post
@@ -143,10 +164,11 @@ class PostCreate(PermissionRequiredMixin, CreateView):
 
     def get_success_url(self, *args, **kwargs):
         #print('* * * * * * *', self.object.pk)
-        return reverse('detail', kwargs={'id': self.object.pk})
+        return reverse('post_detail_show', kwargs={'id': self.object.pk})
+
 
 class ArticleCreate(PermissionRequiredMixin, CreateView):
-    permission_required = ('news.article_create',)
+    permission_required = ('news.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'article_create.html'
@@ -157,8 +179,80 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self, *args, **kwargs):
-        return reverse('detail', kwargs={'id': self.object.pk})
+        return reverse('post_detail_show', kwargs={'id': self.object.pk})
 
+@csrf_protect
+@permission_required('news.add_comment',)
+def comment_create_view(request, pk):
+    # permission_required = ('news.comment_create',) # пока не понятно работает или нет
+    # TODO ^- проверить это
+    print('- -  - - - >', pk)
+    new = Post.objects.get(id=pk)
+    print('New:', new)
+    if request.method == 'GET':
+        #print('GET - - - >', pk)
+        comment_form = CommentForm()
+        context = {
+            'new': new,
+            'comment_form': comment_form,
+        }
+        return render(request, 'comment_create.html', context)
+
+    elif request.method == 'POST':
+        #print('POST - - - >', pk)
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            #print('POST - - - >form.is_valid', pk)
+            commentUser = comment_form.cleaned_data.get('commentUser')
+            text = comment_form.cleaned_data.get('text')
+            Comment.objects.create(
+                commentPost=new,
+                commentUser=commentUser,
+                text=text
+            )
+            context = {
+                'new': new,
+                'comment_form': comment_form,
+            }
+            return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id' : pk}))
+        else:
+            context = {
+                'new': new,
+                'comment_form': comment_form,
+            }
+            return render(request, 'comment_create.html', context)
+
+
+class Commen_tCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_comment',)
+    # TODO Как здесь вызвать Post по номеру id или pk, если они сюда никак не передаются
+    #new = Post.objects.get(id=pk)
+    #print('New:', new)
+    model = Comment
+    form_class = CommentForm
+    template_name = 'comment_create.html'
+''' не работает:
+    def get_object(self):
+        obj = super().get_object()
+        pk = self.kwargs.get('pk')
+        print('   - - - pk - - - ', pk)'''
+'''
+    def form_valid(self, form):
+        print(self.kwargs['pk'])
+        if comment_form.is_valid():
+            commentUser = comment_form.cleaned_data.get('commentUser')
+            text = comment_form.cleaned_data.get('text')
+            Comment.objects.create(
+                commentPost=new,
+                commentUser=commentUser,
+                text=text
+            )
+        return super().form_valid(form)
+
+    def get_success_url(self, *args, **kwargs):
+        print(self.object.pk)
+        return reverse('post_detail_show', kwargs={'id': self.object.pk})
+'''
 
 @login_required
 @csrf_protect

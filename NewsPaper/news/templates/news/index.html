@@ -1,10 +1,14 @@
 {% extends 'default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
+{% load profanity %}
+
+{% load cache %}
+    {% cache 60 content %}
 
 {% block content %}
 <br>
-{% if perms.news.post_create %}
+{% if perms.news.add_post %}
            <div style="display: inline-block; margin: 0;">
                 <nav class="navbar navbar-expand-lg static-top">
                    <ul class="navbar-nav ml-auto">
@@ -21,17 +25,18 @@
 {% endif %}
 {% for new in news %}
 <br>
-<h2>{{ new.title|display_some_bad_text }}</h2>
+<h2>{{ new.title|censor }}</h2>
+<h2>{{ new.title_|display_some_bad_text }}</h2>
 <h6><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}; Rating: {{ new.rating }}</i></h6>
 <h6>{{ new.categoryType }}: Category:
     {% for c in new.catz %}
     <i>{{ c }}</i>
     {% endfor %}
     </h6>
-    <h6>{{ new.id_ }} {{ new.like_ }}</h6>
+    <h6>{{ new.id }} {{ new.like_ }}</h6>
 
 
-<h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:30 }} </a></h5>
+<h5><a href="{{ new.get_absolute_url }}">{{ new.text|censor|truncatechars:30 }} </a></h5>
 <br>
 {% endfor %}
 
@@ -64,3 +69,4 @@
 </nav>
 
 {% endblock content %}
+{% endcache %}

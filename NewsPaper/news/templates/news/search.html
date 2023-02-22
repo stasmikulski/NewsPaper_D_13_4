@@ -1,6 +1,7 @@
 {% extends 'default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
+{% load profanity %}
 
 {% block content %}
 <br>
@@ -12,7 +13,7 @@
 <hr>
 {% for new in news %}
 <br>
-<h2>{{ new.title|display_some_bad_text }}</h2>
+<h2>{{ new.title|censor }}</h2>
 <h6><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}; Rating: {{ new.rating }}</i></h6>
 <h6>{{ new.categoryType }} : Category:
     {% for c in new.catz %}
@@ -21,7 +22,7 @@
     <h6>{{ new.id_ }}</h6>
 
 </h6>
-<h5><a href="{{ new.get_absolute_url }}">{{ new.text|truncatechars:20 }} </a></h5>
+<h5><a href="{{ new.get_absolute_url }}">{{ new.text|censor|truncatechars:20 }} </a></h5>
 <br>
 {% endfor %}
    {# Добавляем пагинацию на страницу #}
