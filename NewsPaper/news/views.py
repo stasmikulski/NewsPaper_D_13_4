@@ -133,7 +133,7 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
 
 
 class ArticleDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = ('news.post_delete',)
+    permission_required = ('news.delete_post',)
     model = Post
     context_object_name = 'new'
     template_name = 'article_delete.html'
@@ -184,7 +184,7 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
 @csrf_protect
 @permission_required('news.add_comment',)
 def comment_create_view(request, pk):
-    # permission_required = ('news.comment_create',) # пока не понятно работает или нет
+    # permission_required = ('news.add_comment',) # пока не понятно работает или нет
     # TODO ^- проверить это
     print('- -  - - - >', pk)
     new = Post.objects.get(id=pk)
