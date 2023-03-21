@@ -32,10 +32,10 @@ def index(request):
 def detail(request, id):
     new = Post.objects.get(id=id)
     post_comments = Comment.objects.filter(commentPost=Post.objects.get(id=id))
-    post_comments_count = Comment.objects.filter(commentPost=Post.objects.get(id=id)).count()
+    ####post_comments_count = Comment.objects.filter(commentPost=Post.objects.get(id=id)).count()
     #post_comments_values = post_comments.values('dateCreation', 'commentUser', 'rating', 'text')
     #print(post_comments_values)
-    return render(request, 'details.html', context={'new': new, 'post_comments': post_comments, 'post_comments_count': post_comments_count})
+    return render(request, 'details.html', context={'new': new, 'post_comments': post_comments})
 
 class PostList(ListView):
    model = Post
@@ -125,11 +125,14 @@ class ArticleDetailEdit(PermissionRequiredMixin, UpdateView):
 class PostDelete(PermissionRequiredMixin, DeleteView):
     permission_required = ('news.delete_post',)
     model = Post
-    print('- -  - - - >', model.pk)
-    print('- -  - - - >', model.id)
     context_object_name = 'new'
     template_name = 'post_delete.html'
     success_url = '/news_list/'
+
+    #def get_object(self):
+     #   model_instance = Post.objects.get(pk=self.kwargs['pk'])
+      #  idid = model_instance.id
+       # print('idid',idid)
 
 
 class ArticleDelete(PermissionRequiredMixin, DeleteView):
@@ -186,7 +189,7 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
 def comment_create_view(request, pk):
     # permission_required = ('news.add_comment',) # пока не понятно работает или нет
     # TODO ^- проверить это
-    print('- -  - - - >', pk)
+    print('- - -comment_create_view- - >', pk)
     new = Post.objects.get(id=pk)
     print('New:', new)
     if request.method == 'GET':
@@ -214,7 +217,7 @@ def comment_create_view(request, pk):
                 'new': new,
                 'comment_form': comment_form,
             }
-            return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id' : pk}))
+            return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': pk}))
         else:
             context = {
                 'new': new,
@@ -222,6 +225,66 @@ def comment_create_view(request, pk):
             }
             return render(request, 'comment_create.html', context)
 
+
+@csrf_protect
+@permission_required('news.change_comment',)
+def comment_edit_view(request, id1, id2):
+    print('- - - comment_edit_view - - new:', id1, '- - comment:', id2)
+    new = Post.objects.get(id=id1)
+    print('New:', new)
+    comment = Comment.objects.get(id=id2)
+    print('Comment:', comment)
+    form = CommentForm(request.POST or None, instance=comment)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': id1}))
+    return render(request, 'comment_edit.html', {'new': new, 'comment': comment, 'form': form})
+
+
+class CommentDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_comment',)
+    #model = Comment
+    template_name = 'comment_delete.html'
+    success_url = '/news_list/'
+
+    def get_object(self):
+        print('get_object')
+        #print('- - - comment_delete_view - - new:', id1, '- - comment:', id2)
+        new = Post.objects.get(id=self.kwargs['id1'])
+        print('New:', new)
+        idid1 = new.id
+        print('idid1',idid1)
+        comment = Comment.objects.get(id=self.kwargs['id2'])
+        print('Comment:', comment)
+        idid2 = comment.id
+        print('idid2',idid2)
+        context = {'new': new, 'comment': comment}
+        return comment
+        #TODO надо передать и new и comment, но передается только comment, а context ничего не перадает (пусто)
+
+    def delete(self, request, *args, **kwargs):
+        comment2del = Comment.objects.get(id=self.kwargs['id2'])
+        comment2del.delete()
+        return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': id1}))
+
+
+@csrf_protect
+@permission_required('news.delete_comment',)
+def comment_delete_view(request, id1, id2):
+    print('- - - comment_delete_view - - new:', id1, '- - comment:', id2)
+    new = Post.objects.get(id=id1)
+    print('New:', new)
+    comment = Comment.objects.get(id=id2)
+    print('Comment:', comment)
+    if request.method == 'POST':
+        print('- - - form valid - - new:', id1, '- - comment:', id2)
+        comment2del = Comment.objects.get(id=id2)
+        comment2del.delete()
+        return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': id1}))
+    else:
+        #No data submitted; create a blank form.
+        form = CommentForm()
+    return render(request, 'comment_delete.html', {'new': new, 'comment': comment})
 
 class Commen_tCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_comment',)

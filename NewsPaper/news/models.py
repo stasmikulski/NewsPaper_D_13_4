@@ -67,6 +67,10 @@ class Post(models.Model):
         #print(catsiinline)
         return catz
 
+    def comm_count(self):
+        comm_count = Comment.objects.filter(commentPost=self.id).count()
+        return comm_count
+
     def get_absolute_url(self):
         if self.categoryType == 'NW':
             return reverse('post_detail_show', kwargs={'id':self.id})
@@ -90,7 +94,7 @@ class Post(models.Model):
         cache.delete(f'post-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
     def __str__(self):
-        return f'{self.title}: {self.text[:20]}'
+        return f'{self.title} :: {self.text[:20]}'
 
 class NewsCategory(models.Model):
     postThrough = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -113,6 +117,9 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+    def __str__(self):
+        return f'{self.text[:30]}'
 
 
 class Subscription(models.Model):
