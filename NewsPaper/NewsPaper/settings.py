@@ -201,13 +201,6 @@ LOGGING = {
     'disable_existing_loggers': False,
     'style': '{',
     'formatters': {
-        'general_format': {
-            'format': '%(asctime)s %(levelname)s %(module)s %(message)'
-        },
-        'security_format': {
-            'format': '{asctime}:: {levelname}:: {message}:: {module}',
-            'style': '{',
-        },
         'simple': {
             'format': '%(asctime) %(levelname) %(message)s',
         },
@@ -219,10 +212,13 @@ LOGGING = {
             'format': '{asctime}:: {levelname}:: {message}:: {pathname}:: {exc_info}',
             'style': '{',
         },
-        'news': {
-            'format': '{asctime}:: {levelname}:: {message}:: {module}',
-            'style': '{',
+        'general_format': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(message)'
         },
+        'security_format': {
+            'format': '{asctime}:: {levelname}:: {module}:: {message}',
+            'style': '{',
+        }
     },
     'filters': {
         'require_debug_true': {
@@ -233,33 +229,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'news': {
-            'level': 'INFO',
-            'filters': ['require_debug_false'],
-            'class': 'logging.FileHandler',
-            'formatter': 'news',
-            'filename': 'news/logs/general.log',
-        },
-        'error_critical': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filters': ['require_debug_false'],
-            'formatter': 'error_critical_f',
-            'filename': 'news/logs/errors.log',
-        },
-        'general': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filters': ['require_debug_false'],
-            'formatter': 'general_format',
-            'filename': 'news/logs/general.log',
-        },
-        'file_security': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'formatter': 'security_format',
-            'filename': 'news/logs/security.log'
-        },
         'console': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
@@ -272,11 +241,24 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'warning'
         },
-        'console_error': {
+        'error_critical': {
             'level': 'ERROR',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'error_critical_f'
+            'class': 'logging.FileHandler',
+            'formatter': 'error_critical_f',
+            'filename': 'news/logs/errors.log',
+        },
+        'general': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filters': ['require_debug_false'],
+            'formatter': 'general_format',
+            'filename': 'news/logs/general.log',
+        },
+        'file_security': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'security_format',
+            'filename': 'news/logs/security.log'
         },
         'mail_admin': {
             'level': 'ERROR',
@@ -287,7 +269,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'console_warning', 'console_error', 'news'],
+            'handlers': ['console', 'console_warning', 'error_critical'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -308,6 +290,11 @@ LOGGING = {
         },
         'django.db.backends': {
             'handlers': ['error_critical'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['file_security'],
             'level': 'ERROR',
             'propagate': False,
         },
