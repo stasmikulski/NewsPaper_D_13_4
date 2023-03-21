@@ -25,18 +25,18 @@
 {% endif %}
 {% for new in news %}
 <br>
-<h2>{{ new.title|censor }}</h2>
-<h2>{{ new.title_|display_some_bad_text }}</h2>
-<h6><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}; Rating: {{ new.rating }}</i></h6>
+<h2 class="mark">{{ new.title|hide_forbidden }}</h2>
+<h2>{{ new.title_|hide_forbidden }}</h2>
+<h6 class="small"><i>{{ new.datethis }}; Author: {{ new.author.authorUser.username }}; Rating: {{ new.rating }}</i></h6>
 <h6>{{ new.categoryType }}: Category:
     {% for c in new.catz %}
     <i>{{ c }}</i>
     {% endfor %}
     </h6>
-    <h6>{{ new.id }} {{ new.like_ }}</h6>
+    <h6>{{ new.id_ }} {{ new.like_ }}</h6>
 
-
-<h5><a href="{{ new.get_absolute_url }}">{{ new.text|censor|truncatechars:30 }} </a></h5>
+<h5><a href="{{ new.get_absolute_url }}">{{ new.text|hide_forbidden|truncatechars:30 }} </a></h5>
+<p class="small">Comments: {{ new.comm_count }}</p>
 <br>
 {% endfor %}
 
