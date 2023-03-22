@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1#a$a4$fi%gz*t*9zs3p3!5zer1(-gs0a&ww7uzuoe_ga*s#sw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -202,7 +202,9 @@ LOGGING = {
     'style': '{',
     'formatters': {
         'simple': {
-            'format': '%(asctime) %(levelname) %(message)s',
+            #'format': '%(asctime)s %(levelname)s %(message)s',
+            'format': '{asctime}:: {levelname}:: {message}',
+            'style': '{',
         },
         'warning': {
             'format': '{asctime}:: {levelname}:: {message}:: {pathname}',
@@ -213,7 +215,8 @@ LOGGING = {
             'style': '{',
         },
         'general_format': {
-            'format': '%(asctime)s %(levelname)s %(module)s %(message)'
+            'format': '{asctime}:: {levelname}:: {module}:: {message}',
+            'style': '{',
         },
         'security_format': {
             'format': '{asctime}:: {levelname}:: {module}:: {message}',
