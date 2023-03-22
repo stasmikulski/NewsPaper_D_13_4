@@ -189,9 +189,9 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
 def comment_create_view(request, pk):
     # permission_required = ('news.add_comment',) # пока не понятно работает или нет
     # TODO ^- проверить это
-    print('- - -comment_create_view- - >', pk)
+    #print('- - -comment_create_view- - >', pk)
     new = Post.objects.get(id=pk)
-    print('New:', new)
+    #print('New:', new)
     if request.method == 'GET':
         #print('GET - - - >', pk)
         comment_form = CommentForm()
@@ -229,11 +229,11 @@ def comment_create_view(request, pk):
 @csrf_protect
 @permission_required('news.change_comment',)
 def comment_edit_view(request, id1, id2):
-    print('- - - comment_edit_view - - new:', id1, '- - comment:', id2)
+    #print('- - - comment_edit_view - - new:', id1, '- - comment:', id2)
     new = Post.objects.get(id=id1)
-    print('New:', new)
+    #print('New:', new)
     comment = Comment.objects.get(id=id2)
-    print('Comment:', comment)
+    #print('Comment:', comment)
     form = CommentForm(request.POST or None, instance=comment)
     if form.is_valid():
         form.save()
@@ -248,16 +248,16 @@ class CommentDelete(PermissionRequiredMixin, DeleteView):
     success_url = '/news_list/'
 
     def get_object(self):
-        print('get_object')
+        #print('get_object')
         #print('- - - comment_delete_view - - new:', id1, '- - comment:', id2)
         new = Post.objects.get(id=self.kwargs['id1'])
-        print('New:', new)
+        #print('New:', new)
         idid1 = new.id
-        print('idid1',idid1)
+        #print('idid1',idid1)
         comment = Comment.objects.get(id=self.kwargs['id2'])
-        print('Comment:', comment)
+        #print('Comment:', comment)
         idid2 = comment.id
-        print('idid2',idid2)
+        #print('idid2',idid2)
         context = {'new': new, 'comment': comment}
         return comment
         #TODO надо передать и new и comment, но передается только comment, а context ничего не перадает (пусто)
@@ -271,13 +271,13 @@ class CommentDelete(PermissionRequiredMixin, DeleteView):
 @csrf_protect
 @permission_required('news.delete_comment',)
 def comment_delete_view(request, id1, id2):
-    print('- - - comment_delete_view - - new:', id1, '- - comment:', id2)
+    #print('- - - comment_delete_view - - new:', id1, '- - comment:', id2)
     new = Post.objects.get(id=id1)
-    print('New:', new)
+    #print('New:', new)
     comment = Comment.objects.get(id=id2)
-    print('Comment:', comment)
+    #print('Comment:', comment)
     if request.method == 'POST':
-        print('- - - form valid - - new:', id1, '- - comment:', id2)
+        #print('- - - form valid - - new:', id1, '- - comment:', id2)
         comment2del = Comment.objects.get(id=id2)
         comment2del.delete()
         return HttpResponseRedirect(reverse('post_detail_show', kwargs={'id': id1}))

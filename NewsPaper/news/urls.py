@@ -21,7 +21,6 @@ urlpatterns = [
     path('articles/<int:pk>/comment_create/', comment_create_view, name='ar_comment_create'),
     path('news/<int:id1>/comment/<int:id2>/edit/', comment_edit_view, name='comment_edit'),
     path('news/<int:id1>/comment/<int:id2>/delete/', comment_delete_view, name='comment_delete'),
-    #path('news/<int:id1>/comment/<int:id2>/delete/', CommentDelete.as_view(), name='comment_delete'),
     #path('', IndexView.as_view()), # для экспериментов
 
 ]
